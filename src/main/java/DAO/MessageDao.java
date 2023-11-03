@@ -11,7 +11,7 @@ import Util.ConnectionUtil;
 
 public class MessageDao {
 
-    public static List<Message> getAllMessages() {
+    public List<Message> getAllMessages() {
         List<Message> allMessages = new ArrayList<>();
         String sql = "Select * from message";
         try {

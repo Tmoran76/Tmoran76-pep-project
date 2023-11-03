@@ -2,8 +2,15 @@ package Controller;
 
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import DAO.MessageDao;
+import Model.Account;
 import Model.Message;
+import Service.AccountService;
+import Service.MessageService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -18,9 +25,16 @@ public class SocialMediaController {
      * suite must receive a Javalin object from this method.
      * @return a Javalin app object which defines the behavior of the Javalin controller.
      */
+    MessageService ms;
+    AccountService as;
+    public SocialMediaController(){
+        ms = new MessageService();
+        as = new AccountService();
+    }
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         app.get("/messages", this::getAllMessages);
+        app.post("/register", this::createNewAccount);
 
         return app;
     }
@@ -30,7 +44,19 @@ public class SocialMediaController {
      * @param context The Javalin Context object manages information about both the HTTP request and response.
      */
     private void getAllMessages(Context context) {
-        context.json(MessageDao.getAllMessages());
+        context.json(ms.getAllMessages());
+    }
+    private void createNewAccount(Context context) throws JsonMappingException, JsonProcessingException{
+        ObjectMapper om = new ObjectMapper();
+        Account account = om.readValue(context.body(), Account.class);
+        Account newAccount = as.newAccount(account);
+        if(newAccount == null){
+            context.status(400);
+        }
+        else {
+            context.json(newAccount);
+        }
+
     }
 
     
