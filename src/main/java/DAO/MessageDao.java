@@ -106,13 +106,27 @@ public class MessageDao {
                 String messageTxt = rs.getString("message_text");
                 Long timePostedEpoch = rs.getLong("time_posted_epoch");
                 return new Message(messageID, postedBy, messageTxt, timePostedEpoch);
-            }
-            
+            }           
 
         }
         catch(SQLException e){
             e.printStackTrace();
         }
         return null;
+    }
+    public int deleteMessageByID(int messageID){
+        Connection conn = ConnectionUtil.getConnection();
+        try{
+            String sql = "delete from message where message_id = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, messageID);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected;
+
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        return 0;
     }
 }
