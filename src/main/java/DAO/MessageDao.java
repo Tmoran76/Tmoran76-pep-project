@@ -74,8 +74,24 @@ public class MessageDao {
         }
         return null;
     }
-    public List<Integer> getPoster(Message message){
-        Connection conn = ConnectionUtil
+    public List<Integer> getPoster(){
+        List<Integer> allPosters = new ArrayList<>();
+        Connection conn = ConnectionUtil.getConnection();
+        try{
+            String sql = "Select posted_by from message";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                int posted_by = rs.getInt("posted_by");
+                allPosters.add(posted_by);                
+            }
+            return allPosters;
+
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        return null;
 
     }
 }

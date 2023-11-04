@@ -36,6 +36,7 @@ public class SocialMediaController {
         app.get("/messages", this::getAllMessages);
         app.post("/register", this::createNewAccount);
         app.post("/login", this::verifyAccount);
+        app.post("/messages", this::postMessage);
 
         return app;
     }
@@ -69,6 +70,17 @@ public class SocialMediaController {
         }
         else{
             context.json(checkAccount);
+        }
+    }
+    private void postMessage(Context context) throws JsonMappingException, JsonProcessingException{
+        ObjectMapper om = new ObjectMapper();
+        Message message = om.readValue(context.body(), Message.class);
+        Message newMessage = ms.newMessage(message);
+        if(newMessage == null){
+            context.status(400);
+        }
+        else{
+            context.json(newMessage);
         }
     }
 

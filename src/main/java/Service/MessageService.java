@@ -15,11 +15,19 @@ public class MessageService {
         return dao.getAllMessages();        
     }
     public Message newMessage(Message message){
-        if(message.getMessage_text() == null){
+        List<Integer> allPosters = dao.getPoster();
+        if(message.getMessage_text().length() <1){
             return null;
         }
-        else if(message.getMessage_text().length() > 255){
+        else if(message.getMessage_text().length() > 254){
             return null;
+        }
+        else if(message != null){
+            for(int i: allPosters){
+                if(i == message.getPosted_by()){
+                    return dao.createNewMessage(message);
+                }
+            }
         }
 
         return dao.createNewMessage(message);
