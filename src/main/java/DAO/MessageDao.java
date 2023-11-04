@@ -94,4 +94,25 @@ public class MessageDao {
         return null;
 
     }
+    public Message getMessageByID(int messageID){
+        Connection conn = ConnectionUtil.getConnection();
+        try{
+            String sql = "select * from message where message_id = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, messageID);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                int postedBy = rs.getInt("posted_by");
+                String messageTxt = rs.getString("message_text");
+                Long timePostedEpoch = rs.getLong("time_posted_epoch");
+                return new Message(messageID, postedBy, messageTxt, timePostedEpoch);
+            }
+            
+
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

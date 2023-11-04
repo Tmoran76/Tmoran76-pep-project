@@ -33,5 +33,8 @@ public class MessageService {
         return dao.createNewMessage(message);
 
     }
+    public Message messageByID(int message){
+        return dao.getMessageByID(message);
+    }
     
 }

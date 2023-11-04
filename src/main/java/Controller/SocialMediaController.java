@@ -37,6 +37,7 @@ public class SocialMediaController {
         app.post("/register", this::createNewAccount);
         app.post("/login", this::verifyAccount);
         app.post("/messages", this::postMessage);
+        app.get("/messages/{message_id}", this::getMessageByID);
 
         return app;
     }
@@ -83,6 +84,10 @@ public class SocialMediaController {
             context.json(newMessage);
         }
     }
+    private void getMessageByID(Context context){
+        context.json(ms.messageByID(Integer.parseInt(context.pathParam("message_id"))));
+    }
+    
 
     
 
