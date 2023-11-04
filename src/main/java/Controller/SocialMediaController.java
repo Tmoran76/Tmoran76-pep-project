@@ -62,8 +62,8 @@ public class SocialMediaController {
     }
     private void verifyAccount(Context context) throws JsonMappingException, JsonProcessingException{
         ObjectMapper om = new ObjectMapper();
-        Account account = om.readValue(context.body(), Account.class);
-        Account checkAccount = as.verAccount(account.getUsername(), account.getPassword());
+        Account account = om.readValue(context.body(), Account.class);    
+        Account checkAccount = as.verAccount(account);
         if(checkAccount == null){
             context.status(401);
         }

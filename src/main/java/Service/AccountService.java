@@ -29,8 +29,8 @@ public class AccountService {
         
         return dao.addAccount(account);
     }
-    public Account verAccount(String username, String password){
-        return dao.findAccount(username, password);
+    public Account verAccount(Account account){
+        return dao.findAccount(account);
     }
 
     
