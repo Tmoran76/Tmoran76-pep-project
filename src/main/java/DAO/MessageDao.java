@@ -1,8 +1,10 @@
 package DAO;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class MessageDao {
         return allMessages;
 
     } 
-    public static List<Message> getMessagesFromUser(int user){
+    public List<Message> getMessagesFromUser(int user){
         List<Message> foundMessages = new ArrayList<>();
         String sql = "select * from message where posted_by = ?";
         try{
@@ -52,4 +54,28 @@ public class MessageDao {
         }
         return foundMessages;
     }  
+    public Message createNewMessage(Message message){
+        Connection conn = ConnectionUtil.getConnection();
+        try{
+            String sql = "Insert into message(posted_by, message_text, time_posted_epoch) values(?,?,?)";
+            PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, message.getPosted_by());
+            ps.setString(2, message.getMessage_text());
+            ps.setLong(3, message.getTime_posted_epoch());
+            ps.executeUpdate();
+            ResultSet rsKey = ps.getGeneratedKeys();
+            if(rsKey.next()){
+                int messageID = (int)rsKey.getLong("message_id");
+                return new Message(messageID, message.getPosted_by(), message.getMessage_text(), message.getTime_posted_epoch());                
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public List<Integer> getPoster(Message message){
+        Connection conn = ConnectionUtil
+
+    }
 }
