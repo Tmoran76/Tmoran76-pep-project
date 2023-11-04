@@ -13,11 +13,15 @@ public class AccountDao {
         Connection conn = ConnectionUtil.getConnection();
         try{
             String sql = "Insert Into Account (username, password) values(?,?)";
-            PreparedStatement ps = conn.prepareStatement(sql);
+            PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, account.getUsername());
             ps.setString(2, account.getPassword());
             ps.executeUpdate();
-            return new Account(account.getUsername(), account.getPassword());
+            ResultSet rsKey = ps.getGeneratedKeys();
+            if(rsKey.next()){
+                int accountKey = (int)rsKey.getLong("account_id");
+                return new Account(accountKey, account.getUsername(), account.getPassword());
+            }           
 
         }
         catch(SQLException e){
@@ -43,6 +47,24 @@ public class AccountDao {
             e.printStackTrace();
         }
         return allUsernames;
+    }
+    public Account findAccount(String username, String password){
+        Connection conn = ConnectionUtil.getConnection();
+        try{
+            String sql = "Select * from account where username = ? and password = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+            int account_id = rs.getInt("account_id");
+            String un = rs.getString("username");
+            String pw = rs.getString("password");
+            return new Account(account_id, un, pw);
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        return null;
     }
     
 }

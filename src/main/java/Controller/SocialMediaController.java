@@ -35,12 +35,14 @@ public class SocialMediaController {
         Javalin app = Javalin.create();
         app.get("/messages", this::getAllMessages);
         app.post("/register", this::createNewAccount);
+        app.post("/login", this::verifyAccount);
 
         return app;
     }
 
     /**
-     * This is an example handler for an example endpoint.
+     
+
      * @param context The Javalin Context object manages information about both the HTTP request and response.
      */
     private void getAllMessages(Context context) {
@@ -57,6 +59,17 @@ public class SocialMediaController {
             context.json(newAccount);
         }
 
+    }
+    private void verifyAccount(Context context) throws JsonMappingException, JsonProcessingException{
+        ObjectMapper om = new ObjectMapper();
+        Account account = om.readValue(context.body(), Account.class);
+        Account checkAccount = as.verAccount(account.getUsername(), account.getPassword());
+        if(checkAccount == null){
+            context.status(401);
+        }
+        else{
+            context.json(checkAccount);
+        }
     }
 
     
