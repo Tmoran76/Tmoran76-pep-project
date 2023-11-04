@@ -129,4 +129,17 @@ public class MessageDao {
         }
         return 0;
     }
+    public void updateMessageByID(int message_id, Message message){
+        Connection conn = ConnectionUtil.getConnection();
+        try{
+            String sql = "Update message set message_text = ? where message_id = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, message.getMessage_text());
+            ps.setInt(2, message_id);
+            ps.executeUpdate();
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
 }
